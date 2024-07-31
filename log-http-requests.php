@@ -22,7 +22,18 @@ You should have received a copy of the GNU General Public License
 along with this program; if not, see <http://www.gnu.org/licenses/>.
 */
 
+use Iohna\WP_Clients\Vendor\Iohna\WP_Utils\IohnaTools as t;
+
 defined( 'ABSPATH' ) or exit;
+
+// check if original plugin is active.
+// don't do it with class_exists() because if our plugin is loaded first, it will return false,
+// but when the other plugin loads it will try to define the same class leading to a fatal exception.
+if ( ! in_array(
+	basename( __DIR__ ) . '/' . basename(__FILE__), // plugin_basename.
+	(array) get_option( 'active_plugins', [] ),
+	true )
+) {
 
 class Log_HTTP_Requests
 {
@@ -141,16 +152,25 @@ class Log_HTTP_Requests
             return;
         }
 
+		$response = t::process_response( $response, null, false );
+		if ( is_wp_error( $response ) ) {
+			return;
+		}
+		$response_data = t::fetch_response_data( $response );
+
         // False to ignore current row
         $log_data = apply_filters( 'lhr_log_data', [
-            'url' => $url,
-            'request_args' => json_encode( $args ),
-            'response' => json_encode( $response ),
-            'runtime' => ( microtime( true ) - $this->start_time ),
-            'date_added' => current_time( 'mysql' )
+            'url'          => $url,
+            'request_args' => $args,
+            'response'     => $response_data,
+            'runtime'      => ( microtime( true ) - $this->start_time ),
+            'date_added'   => current_time( 'mysql' ),
         ]);
 
         if ( false !== $log_data ) {
+			$log_data['request_args'] = json_encode( $log_data['request_args'] );
+			$log_data['response']     = json_encode( $log_data['response'] );
+
             $wpdb->insert( $wpdb->prefix . 'lhr_log', $log_data );
         }
     }
@@ -184,3 +204,4 @@ function LHR() {
 
 
 LHR();
+}

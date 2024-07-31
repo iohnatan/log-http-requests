@@ -1,0 +1,26 @@
+{
+	"name":    "iohna/log-http-requests",
+	"version": "1.0.0",
+	"type":    "library",
+	"description": "Iohna log-http-requests.",
+
+	"autoload": {
+		"files": [
+			"log-http-requests.php"
+		],
+		"classmap": [
+			"includes"
+		]
+	},
+
+	"config": {
+		"platform": {
+			"php": "7.4"
+		}
+	},
+
+	"require": {
+		"php": ">=7.2.0"
+	}
+
+}
