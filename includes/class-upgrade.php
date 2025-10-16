@@ -18,7 +18,7 @@ class LHR_Upgrade
                 $this->run_upgrade();
             }
 
-            update_option( 'lhr_version', $this->version );
+            update_option( 'lhr_version', $this->version, true );
         }
     }
 

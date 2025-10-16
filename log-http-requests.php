@@ -53,6 +53,7 @@ class Log_HTTP_Requests
         add_action( 'init', [ $this, 'init' ] );
         add_action( 'admin_menu', [ $this, 'admin_menu' ] );
         add_action( 'admin_enqueue_scripts', [ $this, 'admin_scripts' ] );
+
         add_filter( 'http_request_args', [ $this, 'start_timer' ] );
         add_action( 'http_api_debug', [ $this, 'capture_request' ], 10, 5 );
         add_action( 'lhr_cleanup_cron', [ $this, 'cleanup' ] );
